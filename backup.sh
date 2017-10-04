@@ -31,7 +31,7 @@ create_backup_directories
 echo 'Backup Influx metadata'
 influxd backup ${BACKUPDIR}/${DATE}
 
-for db in $(python -c "import sys, json, requests; r = requests.get('http://${HOST}:${PORT}/query', params={'u':'admin', 'p':'dwadba', 'q':'show databases'}); print '\n'.join([db[0] for db in r.json()['results'][0]['series'][0]['values'][:]])"); do 
+for db in $(python -c "import sys, json, requests; r = requests.get('http://${HOST}:${PORT}/query', params={'u':'admin', 'p':'admin', 'q':'show databases'}); print '\n'.join([db[0] for db in r.json()['results'][0]['series'][0]['values'][:]])"); do 
   echo "Creating backup for $db"
   influxd backup -database $db ${BACKUPDIR}/${DATE}/$db-backup
 done
