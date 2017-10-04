@@ -27,9 +27,12 @@ if [ $(find "$BACKUPDIR" -maxdepth 1 -type d | wc -l) -ge $RETENTION ]
   then find "$BACKUPDIR" -mindepth 1 -maxdepth 1 -type d -mtime +${RETENTION} -delete -print
 fi
 
+#META Data Backup
 create_backup_directories
 echo 'Backup Influx metadata'
 influxd backup ${BACKUPDIR}/${DATE}
+
+#Back up all the Databases existing in InfluxDb
 
 for db in $(python -c "import sys, json, requests; r = requests.get('http://${HOST}:${PORT}/query', params={'u':'admin', 'p':'admin', 'q':'show databases'}); print '\n'.join([db[0] for db in r.json()['results'][0]['series'][0]['values'][:]])"); do 
   echo "Creating backup for $db"
